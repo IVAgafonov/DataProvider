@@ -1,0 +1,19 @@
+{
+    "name": "iagafonov/data-provider",
+    "description": "Default sql data provider",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Igor Agafonov",
+            "email": "igoradm90@yandex.ru"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "IVAgafonov\\": "/src"
+        }
+    },
+    "minimum-stability": "stable",
+    "require": {}
+}
