@@ -11,9 +11,15 @@
     ],
     "autoload": {
         "psr-4": {
-            "IVAgafonov\\": "/src"
+            "IVAgafonov\\": "src"
         }
     },
+    "scripts": {
+        "test": "./vendor/bin/codecept run unit --coverage"
+    },
     "minimum-stability": "stable",
-    "require": {}
+    "require": {},
+    "require-dev": {
+        "codeception/codeception": "^2.3"
+    }
 }
