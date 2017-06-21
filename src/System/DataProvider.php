@@ -41,9 +41,6 @@ class DataProvider implements DataProviderInterface
             throw new \Exception("Invalid database params");
         }
         $this->db = new \PDO("mysql:dbname=".$config['dbName'].";host=".$config['dbHost'].";charset=utf8", $config['dbUser'], $config['dbPass']);
-        if (!$this->db) {
-            throw new \Exception("Can't init data provider");
-        }
     }
 
     /**
@@ -57,10 +54,12 @@ class DataProvider implements DataProviderInterface
     public function getObjects($query, $object)
     {
         $this->statement = $this->db->query($query);
-        $result = $this->statement->execute();
-        if ($result) {
+        if ($this->statement) {
             $this->statement->setFetchMode(\PDO::FETCH_CLASS, $object);
-            return $this->statement->fetchAll();
+            $objects =  $this->statement->fetchAll();
+            if ($objects) {
+                return $objects;
+            }
         }
         return false;
     }
@@ -76,8 +75,7 @@ class DataProvider implements DataProviderInterface
     public function getObject($query, $object)
     {
         $this->statement = $this->db->query($query);
-        $result = $this->statement->execute();
-        if ($result) {
+        if ($this->statement) {
             $this->statement->setFetchMode(\PDO::FETCH_CLASS, $object);
             return $this->statement->fetch();
         }
@@ -94,9 +92,11 @@ class DataProvider implements DataProviderInterface
     public function getArrays($query)
     {
         $this->statement = $this->db->query($query);
-        $result = $this->statement->execute();
-        if ($result) {
-            return $this->statement->fetchAll(\PDO::FETCH_ASSOC);
+        if ($this->statement) {
+            $result =  $this->statement->fetchAll(\PDO::FETCH_ASSOC);
+            if ($result) {
+                return $result;
+            }
         }
         return false;
     }
@@ -111,8 +111,8 @@ class DataProvider implements DataProviderInterface
     public function getArray($query)
     {
         $this->statement = $this->db->query($query);
-        $result = $this->statement->execute();
-        if ($result) {
+        var_dump($this->statement);
+        if ($this->statement) {
             return $this->statement->fetch(\PDO::FETCH_ASSOC);
         }
         return false;
@@ -128,8 +128,7 @@ class DataProvider implements DataProviderInterface
     public function getValue($query)
     {
         $this->statement = $this->db->query($query);
-        $result = $this->statement->execute();
-        if ($result) {
+        if ($this->statement) {
             $value = $this->statement->fetch(\PDO::FETCH_BOTH);
             if (!empty($value[0])) {
                 return $value[0];
@@ -148,9 +147,8 @@ class DataProvider implements DataProviderInterface
     public function doQuery($query)
     {
         $this->statement = $this->db->query($query);
-        $result = $this->statement->execute();
-        if ($result) {
-            return $this->statement->fetchAll(\PDO::FETCH_ASSOC);
+        if ($this->statement && $this->statement->rowCount()) {
+            return $this->statement->rowCount();
         }
         return false;
     }
@@ -172,7 +170,10 @@ class DataProvider implements DataProviderInterface
      */
     public function getAffectedRows()
     {
-        return $this->statement->rowCount();
+        if ($this->statement) {
+            return $this->statement->rowCount();
+        }
+        return false;
     }
 
     /**
