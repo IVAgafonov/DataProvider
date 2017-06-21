@@ -15,11 +15,12 @@
         }
     },
     "scripts": {
-        "test": "./vendor/bin/codecept run unit --coverage"
+        "test": "./vendor/bin/codecept run unit --coverage --coverage-xml"
     },
     "minimum-stability": "stable",
     "require": {},
     "require-dev": {
+        "satooshi/php-coveralls": "^1.0",
         "codeception/codeception": "^2.3"
     }
 }
