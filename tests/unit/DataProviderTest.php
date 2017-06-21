@@ -29,7 +29,7 @@ class DataProviderTest extends \Codeception\Test\Unit
     public function testCreateObjectWithInvalidDb()
     {
         $config = [
-            'dbHost' => '192.168.1.0',
+            'dbHost' => '127.0.0.127',
             'dbName' => 'test',
             'dbUser' => 'travis',
             'dbPass' => ''
@@ -166,6 +166,14 @@ class DataProviderTest extends \Codeception\Test\Unit
         $dataProvider = new \IVAgafonov\System\DataProvider($config);
 
         $dataProvider->doQuery("INSERT INTO test SET Test = 'testtest'");
+        $insertId = $dataProvider->getLastInsertId();
+        $this->assertEquals(2, $insertId);
+
+        $dataProvider->doQuery("DELETE FROM test WHERE Id = 2");
+        $affectedRows = $dataProvider->getAffectedRows();
+        $this->assertEquals(1, $affectedRows);
+
+        $dataProvider->doQuery("INSERT INTO test SET Test2 = 'testtest'");
         $error = $dataProvider->getLastError();
         $errno = $dataProvider->getLastErrno();
         $insertId = $dataProvider->getLastInsertId();
