@@ -29,7 +29,7 @@ class DataProviderTest extends \Codeception\Test\Unit
     public function testCreateObjectWithInvalidDb()
     {
         $config = [
-            'dbHost' => '127.0.0.127',
+            'dbHost' => '255.255.255.255',
             'dbName' => 'test',
             'dbUser' => 'travis',
             'dbPass' => ''
@@ -179,8 +179,8 @@ class DataProviderTest extends \Codeception\Test\Unit
         $insertId = $dataProvider->getLastInsertId();
 
         $this->assertArrayHasKey(0, $error);
-        $this->assertEquals(42000, $error[0]);
-        $this->assertEquals(42000, $errno);
+        $this->assertEquals('42S22', $error[0]);
+        $this->assertEquals('42S22', $errno);
         $this->assertEquals(0, $insertId);
         $this->assertEquals(false, $dataProvider->getAffectedRows());
     }
