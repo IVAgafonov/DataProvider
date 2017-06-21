@@ -37,7 +37,7 @@ class DataProvider implements DataProviderInterface
      */
     public function __construct($config)
     {
-        if (empty($config['dbHost']) || empty($config['dbName']) || empty($config['dbUser']) || empty($config['dbPass'])) {
+        if (empty($config['dbHost']) || empty($config['dbName']) || empty($config['dbUser']) || !isset($config['dbPass'])) {
             throw new \Exception("Invalid database params");
         }
         $this->db = new \PDO("mysql:dbname=".$config['dbName'].";host=".$config['dbHost'].";charset=utf8", $config['dbUser'], $config['dbPass']);
@@ -111,7 +111,6 @@ class DataProvider implements DataProviderInterface
     public function getArray($query)
     {
         $this->statement = $this->db->query($query);
-        var_dump($this->statement);
         if ($this->statement) {
             return $this->statement->fetch(\PDO::FETCH_ASSOC);
         }
