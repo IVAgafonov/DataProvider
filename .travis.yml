@@ -8,5 +8,7 @@ before_install:
   - echo "USE test;DROP TABLE IF EXISTS test;CREATE TABLE test (Id int(11) unsigned NOT NULL AUTO_INCREMENT, Test varchar(255) NOT NULL DEFAULT '', PRIMARY KEY(Id)) ENGINE=MyISAM DEFAULT CHARSET=utf8;INSERT INTO test SET Test = 'test';" | mysql -u root
 script:
   - composer test
+after_script:
+  - ./vendor/bin/coveralls
 services:
  - mysql
