@@ -36,7 +36,7 @@ class DataProviderTest extends \Codeception\Test\Unit
         ];
 
         $this->expectException(\Exception::class);
-        $this->expectExceptionMessage("SQLSTATE[HY000] [2003] Can't connect to MySQL server on '192.168.1.0' (101)");
+        $this->expectExceptionMessage("SQLSTATE[HY000] [2002] Network is unreachable");
 
         $dataProvider = new \IVAgafonov\System\DataProvider($config);
     }
