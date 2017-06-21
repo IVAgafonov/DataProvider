@@ -29,14 +29,14 @@ class DataProviderTest extends \Codeception\Test\Unit
     public function testCreateObjectWithInvalidDb()
     {
         $config = [
-            'dbHost' => '192.168.1.0',
+            'dbHost' => '255.255.255.255',
             'dbName' => 'test',
-            'dbUser' => 'test',
-            'dbPass' => 'test'
+            'dbUser' => 'travis',
+            'dbPass' => ''
         ];
 
         $this->expectException(\Exception::class);
-        $this->expectExceptionMessage("SQLSTATE[HY000] [2003] Can't connect to MySQL server on '192.168.1.0' (101)");
+        $this->expectExceptionMessage("SQLSTATE[HY000] [2002] Network is unreachable");
 
         $dataProvider = new \IVAgafonov\System\DataProvider($config);
     }
@@ -44,10 +44,10 @@ class DataProviderTest extends \Codeception\Test\Unit
     public function testCreateObjectWithValidConfig()
     {
         $config = [
-            'dbHost' => '192.168.1.211',
+            'dbHost' => '127.0.0.1',
             'dbName' => 'test',
-            'dbUser' => 'test',
-            'dbPass' => 'test'
+            'dbUser' => 'travis',
+            'dbPass' => ''
         ];
 
         $dataProvider = new \IVAgafonov\System\DataProvider($config);
@@ -56,10 +56,10 @@ class DataProviderTest extends \Codeception\Test\Unit
 
     public function testGetValue() {
         $config = [
-            'dbHost' => '192.168.1.211',
+            'dbHost' => '127.0.0.1',
             'dbName' => 'test',
-            'dbUser' => 'test',
-            'dbPass' => 'test'
+            'dbUser' => 'travis',
+            'dbPass' => ''
         ];
 
         $dataProvider = new \IVAgafonov\System\DataProvider($config);
@@ -69,10 +69,10 @@ class DataProviderTest extends \Codeception\Test\Unit
 
     public function testGetValueInvalid() {
         $config = [
-            'dbHost' => '192.168.1.211',
+            'dbHost' => '127.0.0.1',
             'dbName' => 'test',
-            'dbUser' => 'test',
-            'dbPass' => 'test'
+            'dbUser' => 'travis',
+            'dbPass' => ''
         ];
 
         $dataProvider = new \IVAgafonov\System\DataProvider($config);
@@ -82,10 +82,10 @@ class DataProviderTest extends \Codeception\Test\Unit
 
     public function testGetArray() {
         $config = [
-            'dbHost' => '192.168.1.211',
+            'dbHost' => '127.0.0.1',
             'dbName' => 'test',
-            'dbUser' => 'test',
-            'dbPass' => 'test'
+            'dbUser' => 'travis',
+            'dbPass' => ''
         ];
 
         $dataProvider = new \IVAgafonov\System\DataProvider($config);
@@ -96,10 +96,10 @@ class DataProviderTest extends \Codeception\Test\Unit
 
     public function testGetArrayInvalid() {
         $config = [
-            'dbHost' => '192.168.1.211',
+            'dbHost' => '127.0.0.1',
             'dbName' => 'test',
-            'dbUser' => 'test',
-            'dbPass' => 'test'
+            'dbUser' => 'travis',
+            'dbPass' => ''
         ];
 
         $dataProvider = new \IVAgafonov\System\DataProvider($config);
@@ -110,10 +110,10 @@ class DataProviderTest extends \Codeception\Test\Unit
 
     public function testGetArrays() {
         $config = [
-            'dbHost' => '192.168.1.211',
+            'dbHost' => '127.0.0.1',
             'dbName' => 'test',
-            'dbUser' => 'test',
-            'dbPass' => 'test'
+            'dbUser' => 'travis',
+            'dbPass' => ''
         ];
 
         $dataProvider = new \IVAgafonov\System\DataProvider($config);
@@ -125,10 +125,10 @@ class DataProviderTest extends \Codeception\Test\Unit
 
     public function testGetArraysInvalid() {
         $config = [
-            'dbHost' => '192.168.1.211',
+            'dbHost' => '127.0.0.1',
             'dbName' => 'test',
-            'dbUser' => 'test',
-            'dbPass' => 'test'
+            'dbUser' => 'travis',
+            'dbPass' => ''
         ];
 
         $dataProvider = new \IVAgafonov\System\DataProvider($config);
@@ -139,10 +139,10 @@ class DataProviderTest extends \Codeception\Test\Unit
 
     public function testDoQueryAndGetAffectedRows() {
         $config = [
-            'dbHost' => '192.168.1.211',
+            'dbHost' => '127.0.0.1',
             'dbName' => 'test',
-            'dbUser' => 'test',
-            'dbPass' => 'test'
+            'dbUser' => 'travis',
+            'dbPass' => ''
         ];
 
         $dataProvider = new \IVAgafonov\System\DataProvider($config);
@@ -157,32 +157,40 @@ class DataProviderTest extends \Codeception\Test\Unit
 
     public function testGetErrorAndErrno() {
         $config = [
-            'dbHost' => '192.168.1.211',
+            'dbHost' => '127.0.0.1',
             'dbName' => 'test',
-            'dbUser' => 'test',
-            'dbPass' => 'test'
+            'dbUser' => 'travis',
+            'dbPass' => ''
         ];
 
         $dataProvider = new \IVAgafonov\System\DataProvider($config);
 
         $dataProvider->doQuery("INSERT INTO test SET Test = 'testtest'");
+        $insertId = $dataProvider->getLastInsertId();
+        $this->assertEquals(2, $insertId);
+
+        $dataProvider->doQuery("DELETE FROM test WHERE Id = 2");
+        $affectedRows = $dataProvider->getAffectedRows();
+        $this->assertEquals(1, $affectedRows);
+
+        $dataProvider->doQuery("INSERT INTO test SET Test2 = 'testtest'");
         $error = $dataProvider->getLastError();
         $errno = $dataProvider->getLastErrno();
         $insertId = $dataProvider->getLastInsertId();
 
         $this->assertArrayHasKey(0, $error);
-        $this->assertEquals(42000, $error[0]);
-        $this->assertEquals(42000, $errno);
+        $this->assertEquals('42S22', $error[0]);
+        $this->assertEquals('42S22', $errno);
         $this->assertEquals(0, $insertId);
         $this->assertEquals(false, $dataProvider->getAffectedRows());
     }
 
     public function testGetObject() {
         $config = [
-            'dbHost' => '192.168.1.211',
+            'dbHost' => '127.0.0.1',
             'dbName' => 'test',
-            'dbUser' => 'test',
-            'dbPass' => 'test'
+            'dbUser' => 'travis',
+            'dbPass' => ''
         ];
 
         $dataProvider = new \IVAgafonov\System\DataProvider($config);
@@ -196,10 +204,10 @@ class DataProviderTest extends \Codeception\Test\Unit
 
     public function testGetObjectInvalid() {
         $config = [
-            'dbHost' => '192.168.1.211',
+            'dbHost' => '127.0.0.1',
             'dbName' => 'test',
-            'dbUser' => 'test',
-            'dbPass' => 'test'
+            'dbUser' => 'travis',
+            'dbPass' => ''
         ];
 
         $dataProvider = new \IVAgafonov\System\DataProvider($config);
@@ -211,10 +219,10 @@ class DataProviderTest extends \Codeception\Test\Unit
 
     public function testGetObjects() {
         $config = [
-            'dbHost' => '192.168.1.211',
+            'dbHost' => '127.0.0.1',
             'dbName' => 'test',
-            'dbUser' => 'test',
-            'dbPass' => 'test'
+            'dbUser' => 'travis',
+            'dbPass' => ''
         ];
 
         $dataProvider = new \IVAgafonov\System\DataProvider($config);
@@ -229,10 +237,10 @@ class DataProviderTest extends \Codeception\Test\Unit
 
     public function testGetObjectsInvalid() {
         $config = [
-            'dbHost' => '192.168.1.211',
+            'dbHost' => '127.0.0.1',
             'dbName' => 'test',
-            'dbUser' => 'test',
-            'dbPass' => 'test'
+            'dbUser' => 'travis',
+            'dbPass' => ''
         ];
 
         $dataProvider = new \IVAgafonov\System\DataProvider($config);
@@ -244,10 +252,10 @@ class DataProviderTest extends \Codeception\Test\Unit
 
     public function testQuote() {
         $config = [
-            'dbHost' => '192.168.1.211',
+            'dbHost' => '127.0.0.1',
             'dbName' => 'test',
-            'dbUser' => 'test',
-            'dbPass' => 'test'
+            'dbUser' => 'travis',
+            'dbPass' => ''
         ];
 
         $dataProvider = new \IVAgafonov\System\DataProvider($config);
