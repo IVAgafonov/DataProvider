@@ -1,7 +1,7 @@
 # Data provider
 Default sql data provider
 
-[![Build Status](https://travis-ci.org/IVAgafonov/DataProvider.svg?branch=master)](https://travis-ci.org/IVAgafonov/DataProvider.svg?branch=master)
+[![Build Status](https://travis-ci.org/IVAgafonov/DataProvider.svg?branch=master)](https://travis-ci.org/IVAgafonov/DataProvider)
 
 ### Installation
 
