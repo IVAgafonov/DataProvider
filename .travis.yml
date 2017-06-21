@@ -5,10 +5,7 @@ before_script:
   - composer install --no-interaction
 before_install:
   - mysql -e 'CREATE DATABASE IF NOT EXISTS test;'
-  - mysql -e 'USE test;'
-  - mysql -e 'DROP TABLE test;'
-  - mysql -e 'CREATE TABLE `test` (`Id` int(11) unsigned NOT NULL AUTO_INCREMENT, `Test` varchar(255) NOT NULL DEFAULT '', PRIMARY KEY(`Id`)) ENGINE=MyISAM DEFAULT CHARSET=utf8;'
-  - mysql -e "INSERT INTO test SET Test = 'test';"
+  - mysql -u root -e "USE test;DROP TABLE test;CREATE TABLE `test` (`Id` int(11) unsigned NOT NULL AUTO_INCREMENT, `Test` varchar(255) NOT NULL DEFAULT '', PRIMARY KEY(`Id`)) ENGINE=MyISAM DEFAULT CHARSET=utf8;INSERT INTO test SET Test = 'test';"
 script:
   - composer test
 services:
